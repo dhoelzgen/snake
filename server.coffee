@@ -10,9 +10,13 @@ snakes = []
 
 class Snake
 	constructor: (@id) ->
-		@direction = "right"	
-		@elements = [[-8, 200], [-7, 200], [-6, 200], [-5, 200], [-4, 200], [-3, 200], [-2, 200], [-1, 200]]
+		@reset()
 	
+	reset: ->
+		rH = Math.floor(Math.random()*49)
+		@direction = "right"	
+		@elements = [[-8, rH], [-7, rH], [-6, rH], [-5, rH], [-4, rH], [-3, rH], [-2, rH], [-1, rH]]
+		
 	doStep: ->
 		@moveTail i for i in [0..6]
 		@moveHead 7
@@ -27,8 +31,30 @@ class Snake
 			when "right" then @elements[i][0] += 1
 			when "up" then @elements[i][1] -= 1
 			when "down" then @elements[i][1] += 1
-		sys.puts(util.inspect @elements, @direction)
+			
+		@elements[i][0] = 49 if @elements[i][0] < 0
+		@elements[i][1] = 49 if @elements[i][1] < 0
+		@elements[i][0] = 0 if @elements[i][0] > 49
+		@elements[i][1] = 0 if @elements[i][1] > 49
 		
+	head: ->
+		@elements[7]
+		
+	blocks: (other) ->
+		head = other.elements[7]
+		collision = false
+		for element in @elements
+			collision = true if head[0] == element[0] and head[1] == element[1]
+
+		return collision
+		
+	blocksSelf: ->
+		head = @elements[7]
+		collision = false
+		for i in [0..6]
+			collision = true if head[0] == @elements[i][0] and head[1] == @elements[i][1]
+		
+		return collision
 
 ### Handle Connections ###
 
@@ -40,10 +66,13 @@ server.addListener "connection", (connection) ->
 	snakes.push clientSnake
 
 	sys.puts "Client #{clientId} connected"
+	connection.send JSON.stringify(
+		type: 'id',
+		value: clientId
+	)
 	
 	connection.addListener "message", (message) ->
 		message = JSON.parse(message)
-		sys.puts("Client #{clientId}: " + message.direction)
 		clientSnake.direction = message.direction
 
 server.addListener "close", (connection) ->
@@ -52,11 +81,27 @@ server.addListener "close", (connection) ->
 ### Update Game State ###
 
 updateState = ->
-	sys.puts "Doing step for #{snakes.length} snakes"
 	snake.doStep() for snake in snakes
-	# server.broadcast JSON.stringify({'server': 'test'})
+	checkCollisions()
+	server.broadcast JSON.stringify(
+		type: 'snakes',
+		value: snakes
+	)
+	
+checkCollisions = ->
+	resetSnakes = []
+	
+	for snake in snakes
+		resetSnakes.push snake if snake.blocksSelf()
+		
+		for other in snakes
+			if other isnt snake
+				resetSnakes.push snake if other.blocks snake
+		
+	for snake in resetSnakes
+		snake.reset()
 
-tick = setInterval updateState, 5000
+tick = setInterval updateState, 100
 
 ### Start Server ###	
 
