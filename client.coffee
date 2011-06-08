@@ -27,7 +27,7 @@ if window["WebSocket"]
 					context.fillRect(x, y, 9, 9)
 			
 		connect = ->
-			server = new WebSocket("ws://localhost:8000")
+			server = new WebSocket("ws://localhost:5000")
 			server.onmessage = (event) ->
 				message = JSON.parse(event.data)
 				switch message.type

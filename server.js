@@ -1,8 +1,10 @@
-var Snake, autoClient, checkCollisions, server, snakes, sys, tick, updateState, util, websocket;
+var HOST, PORT, Snake, autoClient, checkCollisions, server, snakes, sys, tick, updateState, util, websocket;
 sys = require('sys');
 util = require('util');
 websocket = require('websocket-server');
 server = websocket.createServer();
+HOST = null;
+PORT = 5000;
 Array.prototype.remove = function(e) {
   var t, _ref;
   if ((t = this.indexOf(e)) > -1) {
@@ -150,5 +152,5 @@ checkCollisions = function() {
 };
 tick = setInterval(updateState, 100);
 /* Start Server */
-server.listen(8000);
+server.listen(Number(process.env.PORT || PORT), HOST);
 sys.puts("Server started");

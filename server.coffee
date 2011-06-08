@@ -3,6 +3,9 @@ util = require 'util'
 websocket = require 'websocket-server'
 server = websocket.createServer()
 
+HOST = null
+PORT = 5000
+
 Array::remove = (e) -> @[t..t] = [] if (t = @.indexOf(e)) > -1
 
 autoClient = 1
@@ -108,5 +111,5 @@ tick = setInterval updateState, 100
 
 ### Start Server ###	
 
-server.listen(8000)
+server.listen(Number(process.env.PORT || PORT), HOST)
 sys.puts "Server started"
