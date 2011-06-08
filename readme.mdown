@@ -1,0 +1,12 @@
+# Multiplayer Snake Experiment
+
+This multiplayer snake game was built to try out canvas, node.js with websockets, and coffeescript.
+
+# Installation
+
+For now, this experiment is not hosted anywhere. If you want to try it out on your local machine, go through the following steps:
+
+* Clone this repository
+* Go to the folder, and run `npm install`
+* To start the server, run `coffee server.coffee`
+* To start a client, open `index.html` in a browser that support canvas and websockets, i.e. the latest version of Safari or Chrome

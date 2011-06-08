@@ -1,7 +1,6 @@
 sys = require 'sys'
 util = require 'util'
 websocket = require 'websocket-server'
-http = require 'http'
 
 server = websocket.createServer()
 
@@ -10,6 +9,7 @@ PORT = 5000
 
 STAGE_WIDTH = 49
 STAGE_HEIGHT = 49
+SNAKE_LENGTH = 8
 
 Array::remove = (e) -> @[t..t] = [] if (t = @.indexOf(e)) > -1
 
@@ -25,33 +25,34 @@ class Snake
 	reset: ->
 		rH = Math.floor(Math.random()*49)
 		@direction = "right"	
-		@elements = [[-8, rH], [-7, rH], [-6, rH], [-5, rH], [-4, rH], [-3, rH], [-2, rH], [-1, rH]]
-		
+		@elements = ([-i, rH] for i in [SNAKE_LENGTH..1])
 	doStep: ->
-		@moveTail i for i in [0..6]
-		@moveHead 7
+		@moveTail i for i in [0..(SNAKE_LENGTH-2)]
+		@moveHead()
 	
 	moveTail: (i) ->
 		@elements[i][0] = @elements[i+1][0]
 		@elements[i][1] = @elements[i+1][1]
 			
-	moveHead: (i) ->
+	moveHead: ->
+		head = SNAKE_LENGTH - 1
+		
 		switch @direction
-			when "left" then @elements[i][0] -= 1
-			when "right" then @elements[i][0] += 1
-			when "up" then @elements[i][1] -= 1
-			when "down" then @elements[i][1] += 1
+			when "left" then @elements[head][0] -= 1
+			when "right" then @elements[head][0] += 1
+			when "up" then @elements[head][1] -= 1
+			when "down" then @elements[head][1] += 1
 			
-		@elements[i][0] = STAGE_WIDTH if @elements[i][0] < 0
-		@elements[i][1] = STAGE_HEIGHT if @elements[i][1] < 0
-		@elements[i][0] = 0 if @elements[i][0] > STAGE_WIDTH
-		@elements[i][1] = 0 if @elements[i][1] > STAGE_HEIGHT
+		@elements[head][0] = STAGE_WIDTH if @elements[head][0] < 0
+		@elements[head][1] = STAGE_HEIGHT if @elements[head][1] < 0
+		@elements[head][0] = 0 if @elements[head][0] > STAGE_WIDTH
+		@elements[head][1] = 0 if @elements[head][1] > STAGE_HEIGHT
 		
 	head: ->
 		@elements[7]
 		
 	blocks: (other) ->
-		head = other.elements[7]
+		head = other.elements[(SNAKE_LENGTH-1)]
 		collision = false
 		for element in @elements
 			collision = true if head[0] == element[0] and head[1] == element[1]
@@ -59,7 +60,7 @@ class Snake
 		return collision
 		
 	blocksSelf: ->
-		head = @elements[7]
+		head = @elements[(SNAKE_LENGTH-1)]
 		collision = false
 		for i in [0..6]
 			collision = true if head[0] == @elements[i][0] and head[1] == @elements[i][1]
@@ -118,14 +119,3 @@ tick = setInterval updateState, 100
 
 server.listen(port = Number(process.env.PORT || PORT), HOST)
 sys.puts "Server running on port #{port}"
-
-### Start Webserver ###
-
-webserver = http.createServer (req, res) ->
-	res.writeHeader 200, 'Content-Type': 'text/plain'
-	res.write "#{port}"
-	res.end()
-	
-webserver.listen 8080
-
-sys.puts "Webserver running at port #{port}"
