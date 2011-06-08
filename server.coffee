@@ -1,4 +1,5 @@
 sys = require 'sys'
+util = require 'util'
 websocket = require 'websocket-server'
 server = websocket.createServer()
 
@@ -9,29 +10,41 @@ snakes = []
 
 class Snake
 	constructor: (@id) ->
+		@direction = "right"	
 		@elements = [[-8, 200], [-7, 200], [-6, 200], [-5, 200], [-4, 200], [-3, 200], [-2, 200], [-1, 200]]
-		@direction = "right"
-		
+	
 	doStep: ->
-		moveElement i for i in [0..7]
-		
-	moveElement: (i) ->
+		@moveTail i for i in [0..6]
+		@moveHead 7
+	
+	moveTail: (i) ->
+		@elements[i][0] = @elements[i+1][0]
+		@elements[i][1] = @elements[i+1][1]
+			
+	moveHead: (i) ->
 		switch @direction
 			when "left" then @elements[i][0] -= 1
-			when "right" then @elements[i][1] += 1
-			when "up" then @elements[i][0] -= 1
-			when "down" then @elements[i][0] += 1
+			when "right" then @elements[i][0] += 1
+			when "up" then @elements[i][1] -= 1
+			when "down" then @elements[i][1] += 1
+		sys.puts(util.inspect @elements, @direction)
+		
 
 ### Handle Connections ###
 
 server.addListener "connection", (connection) ->
 	clientId = autoClient
-	autoClient += 1
+	clientSnake = new Snake clientId
 	
-	snakes.push new Snake clientId
+	autoClient += 1
+	snakes.push clientSnake
+
+	sys.puts "Client #{clientId} connected"
 	
 	connection.addListener "message", (message) ->
-		sys.puts("Client #{clientId} says: " + message)
+		message = JSON.parse(message)
+		sys.puts("Client #{clientId}: " + message.direction)
+		clientSnake.direction = message.direction
 
 server.addListener "close", (connection) ->
 	sys.puts("Client disconnected")
@@ -39,9 +52,11 @@ server.addListener "close", (connection) ->
 ### Update Game State ###
 
 updateState = ->
-	server.broadcast JSON.stringify({'server': 'test'})
+	sys.puts "Doing step for #{snakes.length} snakes"
+	snake.doStep() for snake in snakes
+	# server.broadcast JSON.stringify({'server': 'test'})
 
-# tick = setInterval updateState, 5000
+tick = setInterval updateState, 5000
 
 ### Start Server ###	
 
