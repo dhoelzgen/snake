@@ -1,10 +1,15 @@
 sys = require 'sys'
 util = require 'util'
 websocket = require 'websocket-server'
+http = require 'http'
+
 server = websocket.createServer()
 
 HOST = null
 PORT = 5000
+
+STAGE_WIDTH = 49
+STAGE_HEIGHT = 49
 
 Array::remove = (e) -> @[t..t] = [] if (t = @.indexOf(e)) > -1
 
@@ -37,10 +42,10 @@ class Snake
 			when "up" then @elements[i][1] -= 1
 			when "down" then @elements[i][1] += 1
 			
-		@elements[i][0] = 49 if @elements[i][0] < 0
-		@elements[i][1] = 49 if @elements[i][1] < 0
-		@elements[i][0] = 0 if @elements[i][0] > 49
-		@elements[i][1] = 0 if @elements[i][1] > 49
+		@elements[i][0] = STAGE_WIDTH if @elements[i][0] < 0
+		@elements[i][1] = STAGE_HEIGHT if @elements[i][1] < 0
+		@elements[i][0] = 0 if @elements[i][0] > STAGE_WIDTH
+		@elements[i][1] = 0 if @elements[i][1] > STAGE_HEIGHT
 		
 	head: ->
 		@elements[7]
@@ -113,3 +118,14 @@ tick = setInterval updateState, 100
 
 server.listen(port = Number(process.env.PORT || PORT), HOST)
 sys.puts "Server running on port #{port}"
+
+### Start Webserver ###
+
+webserver = http.createServer (req, res) ->
+	res.writeHeader 200, 'Content-Type': 'text/plain'
+	res.write "#{port}"
+	res.end()
+	
+webserver.listen 8080
+
+sys.puts "Webserver running at port #{port}"
