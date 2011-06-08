@@ -3,6 +3,8 @@ util = require 'util'
 websocket = require 'websocket-server'
 server = websocket.createServer()
 
+Array::remove = (e) -> @[t..t] = [] if (t = @.indexOf(e)) > -1
+
 autoClient = 1
 snakes = []
 
@@ -74,9 +76,10 @@ server.addListener "connection", (connection) ->
 	connection.addListener "message", (message) ->
 		message = JSON.parse(message)
 		clientSnake.direction = message.direction
-
-server.addListener "close", (connection) ->
-	sys.puts("Client disconnected")
+		
+	connection.addListener "close", (message) ->
+		snakes.remove clientSnake
+		sys.puts("Client #{clientId} disconnected")
 
 ### Update Game State ###
 
