@@ -1,0 +1,8 @@
+{
+	"name":         "snake-canvas",
+	"version":			"0.0.1",
+  "dependencies": {
+    "coffee-script": ">= 1.0.1",
+    "websocket-server": ">= 1.4.03"
+  }
+}
