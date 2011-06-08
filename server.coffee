@@ -111,5 +111,5 @@ tick = setInterval updateState, 100
 
 ### Start Server ###	
 
-server.listen(Number(process.env.PORT || PORT), HOST)
-sys.puts "Server started"
+server.listen(port = Number(process.env.PORT || PORT), HOST)
+sys.puts "Server running on port #{port}"
