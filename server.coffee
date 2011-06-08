@@ -49,7 +49,7 @@ class Snake
 		@elements[head][1] = 0 if @elements[head][1] > STAGE_HEIGHT
 		
 	head: ->
-		@elements[7]
+		@elements[SNAKE_LENGTH-1]
 		
 	blocks: (other) ->
 		head = other.elements[(SNAKE_LENGTH-1)]
@@ -62,7 +62,7 @@ class Snake
 	blocksSelf: ->
 		head = @elements[(SNAKE_LENGTH-1)]
 		collision = false
-		for i in [0..6]
+		for i in [0..(SNAKE_LENGTH-2)]
 			collision = true if head[0] == @elements[i][0] and head[1] == @elements[i][1]
 		
 		return collision
