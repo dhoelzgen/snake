@@ -1,0 +1,39 @@
+body {
+	background-color: #fff;
+	font-family: 'Trebuchet MS', 'Helvetica Neue', Arial, Sans-serif;
+	color: #222;
+}
+
+h1 {
+	font-weight: bold; 	
+	padding: 10px;
+	text-align: center;
+	font-size: 32px;
+}
+
+a, a:active, a:visited {
+	color: #222;
+}
+
+a:hover {
+	color: #a00;
+}
+
+#ribbon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: 0;
+}
+
+#stage {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+p {
+	text-align: center;
+	font-weight: normal;
+	font-size: 11px;
+}

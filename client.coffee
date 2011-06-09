@@ -19,7 +19,7 @@ if window["WebSocket"]
 			
 			# Draw snakes
 			for snake in snakes
-				context.fillStyle = if snake.id == id then 'rgb(255,0,0)' else 'rgb(0,0,0)'
+				context.fillStyle = if snake.id == id then 'rgb(170,0,0)' else 'rgb(0,0,0)'
 				
 				for element in snake.elements
 					x = element[0] * 10
@@ -43,9 +43,7 @@ if window["WebSocket"]
 	 			when 38 then sendDirection "up"
 	 			when 39 then sendDirection "right"
 	 			when 40 then sendDirection "down"
-					
-			
-		
+						
 else
-	### Implement error message of use flash fallback ###
+	alert "Your browser does not support websockets."
 
