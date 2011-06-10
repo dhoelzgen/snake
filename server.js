@@ -1,8 +1,8 @@
-var HOST, PORT, SNAKE_LENGTH, STAGE_HEIGHT, STAGE_WIDTH, Snake, autoClient, checkCollisions, port, server, snakes, sys, tick, updateState, util, websocket;
+var HOST, PORT, SNAKE_LENGTH, STAGE_HEIGHT, STAGE_WIDTH, Snake, autoClient, checkCollisions, http, io, port, server, snakes, socket, sys, tick, updateState, util;
 sys = require('sys');
+http = require('http');
 util = require('util');
-websocket = require('websocket-server');
-server = websocket.createServer();
+io = require('socket.io');
 HOST = null;
 PORT = 80;
 STAGE_WIDTH = 49;
@@ -16,6 +16,15 @@ Array.prototype.remove = function(e) {
 };
 autoClient = 1;
 snakes = [];
+/* Server */
+server = http.createServer(function(req, res) {
+  res.writeHeader(200, {
+    'Content-Type': 'text/plain'
+  });
+  res.write('Snake Experiment Server');
+  return res.end();
+});
+server.listen(port = Number(process.env.PORT || PORT));
 /* Snake Class */
 Snake = (function() {
   function Snake(id) {
@@ -105,22 +114,23 @@ Snake = (function() {
   return Snake;
 })();
 /* Handle Connections */
-server.addListener("connection", function(connection) {
+socket = io.listen(server);
+socket.on("connection", function(client) {
   var clientId, clientSnake;
   clientId = autoClient;
   clientSnake = new Snake(clientId);
   autoClient += 1;
   snakes.push(clientSnake);
   sys.puts("Client " + clientId + " connected");
-  connection.send(JSON.stringify({
+  client.send(JSON.stringify({
     type: 'id',
     value: clientId
   }));
-  connection.addListener("message", function(message) {
+  client.on("message", function(message) {
     message = JSON.parse(message);
     return clientSnake.direction = message.direction;
   });
-  return connection.addListener("close", function(message) {
+  return client.on("close", function(message) {
     snakes.remove(clientSnake);
     return sys.puts("Client " + clientId + " disconnected");
   });
@@ -133,7 +143,7 @@ updateState = function() {
     snake.doStep();
   }
   checkCollisions();
-  return server.broadcast(JSON.stringify({
+  return socket.broadcast(JSON.stringify({
     type: 'snakes',
     value: snakes
   }));
@@ -164,5 +174,4 @@ checkCollisions = function() {
 };
 tick = setInterval(updateState, 100);
 /* Start Server */
-server.listen(port = Number(process.env.PORT || PORT), HOST);
 sys.puts("Server running on port " + port);
