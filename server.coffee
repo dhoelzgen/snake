@@ -1,8 +1,7 @@
 sys = require 'sys'
+http = require 'http'
 util = require 'util'
-websocket = require 'websocket-server'
-
-server = websocket.createServer()
+io = require 'socket.io'
 
 HOST = null
 PORT = 80
@@ -15,6 +14,17 @@ Array::remove = (e) -> @[t..t] = [] if (t = @.indexOf(e)) > -1
 
 autoClient = 1
 snakes = []
+
+### Server ###
+
+server = http.createServer (req, res) ->
+	res.writeHeader 200, 'Content-Type': 'text/plain'
+	res.write 'Snake Experiment Server'
+	res.end()
+	
+server.listen port = Number(process.env.PORT || PORT)
+
+
 
 ### Snake Class ###
 
@@ -69,7 +79,8 @@ class Snake
 
 ### Handle Connections ###
 
-server.addListener "connection", (connection) ->
+socket = io.listen(server)
+socket.on "connection", (client) ->
 	clientId = autoClient
 	clientSnake = new Snake clientId
 	
@@ -77,16 +88,16 @@ server.addListener "connection", (connection) ->
 	snakes.push clientSnake
 
 	sys.puts "Client #{clientId} connected"
-	connection.send JSON.stringify(
+	client.send JSON.stringify(
 		type: 'id',
 		value: clientId
 	)
 	
-	connection.addListener "message", (message) ->
+	client.on "message", (message) ->
 		message = JSON.parse(message)
 		clientSnake.direction = message.direction
 		
-	connection.addListener "close", (message) ->
+	client.on "close", (message) ->
 		snakes.remove clientSnake
 		sys.puts("Client #{clientId} disconnected")
 
@@ -95,7 +106,7 @@ server.addListener "connection", (connection) ->
 updateState = ->
 	snake.doStep() for snake in snakes
 	checkCollisions()
-	server.broadcast JSON.stringify(
+	socket.broadcast JSON.stringify(
 		type: 'snakes',
 		value: snakes
 	)
@@ -117,5 +128,4 @@ tick = setInterval updateState, 100
 
 ### Start Server ###	
 
-server.listen(port = Number(process.env.PORT || PORT), HOST)
 sys.puts "Server running on port #{port}"

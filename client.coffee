@@ -27,9 +27,10 @@ if window["WebSocket"]
 					context.fillRect(x, y, 9, 9)
 			
 		connect = ->
-			server = new WebSocket("ws://snake.nodester.com")
-			server.onmessage = (event) ->
-				message = JSON.parse(event.data)
+			server = new io.Socket("localhost")
+			server.connect()
+			server.on "message", (event) ->
+				message = JSON.parse(event)
 				switch message.type
 					when 'id' then id = message.value
 					when 'snakes' then animate message.value
