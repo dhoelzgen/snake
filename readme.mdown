@@ -2,36 +2,6 @@
 
 This multiplayer snake game was built to try out canvas, node.js with websockets, and coffeescript.
 
-You can see a socket.io based version in action here [http://snake.nodester.com/](http://snake.nodester.com/), but you should use Chrome or Safari to view it...
+You can see a socket.io based version in action at [http://snake.nodester.com/](http://snake.nodester.com/), but you should use Chrome or Safari to view it...
 
-# Installation
-
-For now, this experiment is not hosted anywhere. If you want to try it out on your local machine, go through the following steps:
-
-* Clone this repository
-* Go to the folder, and run `npm install`
-* To start the server, run `coffee server.coffee`
-* To start a client, open `index.html` in a browser that support canvas and websockets, i.e. the latest version of Safari or Chrome (see Troubleshooting Section for Chrome)
-
-# Troubleshooting
-
-## Running in Chrome
-
-Cross origin requests are only allowed for http in Chrome. Therefore, you'll need to run a local http server instead of opening the local file directly to see the client website. To do this, go to the directory you cloned this repository into and run the following command:
-
-	python -c "import SimpleHTTPServer;SimpleHTTPServer.test()"
-	
-You should get an output like this:
-
-	Serving HTTP on 0.0.0.0 port 8000 ...
-	
-After starting the server, open up `http://localhost:8000/` in your browser to go to the client website.
-
-*(Thanks to Peter Cooper for this advise)*
-
-## Running in Firefox
-
-Websockets is not enabled by Default in Firefox. To enable it, go through the following steps:
-
-* Type about:config in address bar and continue by clicking “I’ll be careful, I promise”
-* Set `network.websocket.enabled`  value to `true` and set `network.websocket.override-security-block` preferences to `true`.
+You are currently viewing the socket.io based branch. The project was converted to make hosting on Nodester easier / possible. To see it in action, please click the url above. For local testing or own experiments, I recommend using the current master, since it's a bit cleaner.
