@@ -4,7 +4,7 @@ util = require 'util'
 io = require 'socket.io'
 
 HOST = null
-PORT = 80
+PORT = 10464
 
 STAGE_WIDTH = 49
 STAGE_HEIGHT = 49
