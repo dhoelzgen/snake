@@ -1,7 +1,9 @@
 sys = require 'sys'
 http = require 'http'
 util = require 'util'
+url = require 'url'
 io = require 'socket.io'
+fs = require 'fs'
 
 HOST = null
 PORT = 80
@@ -18,13 +20,26 @@ snakes = []
 ### Server ###
 
 server = http.createServer (req, res) ->
-	res.writeHeader 200, 'Content-Type': 'text/plain'
-	res.write 'Snake Experiment Server'
-	res.end()
-	
+	path = url.parse(req.url).pathname
+	switch path
+		when '/', '/index.html', '/client.coffee', '/style.css'
+			path = '/index.html' if path == '/'
+			fs.readFile __dirname + path, (err, data) ->
+				if err
+					send404(res)
+				else
+			 		res.writeHead 200, 'text/html'
+					res.write data, 'utf8'
+					res.end()
+					
+		else send404 res
+
+send404 = (res) ->
+  res.writeHead 404
+  res.write '404'
+  res.end()
+		
 server.listen port = Number(process.env.PORT || PORT)
-
-
 
 ### Snake Class ###
 
@@ -97,7 +112,7 @@ socket.on "connection", (client) ->
 		message = JSON.parse(message)
 		clientSnake.direction = message.direction
 		
-	client.on "close", (message) ->
+	client.on "disconnect", ->
 		snakes.remove clientSnake
 		sys.puts("Client #{clientId} disconnected")
 

@@ -27,7 +27,7 @@ if window["WebSocket"]
 					context.fillRect(x, y, 9, 9)
 			
 		connect = ->
-			server = new io.Socket("snake.nodester.com")
+			server = new io.Socket("localhost")
 			server.connect()
 			server.on "message", (event) ->
 				message = JSON.parse(event)
