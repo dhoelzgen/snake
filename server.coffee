@@ -5,7 +5,7 @@ websocket = require 'websocket-server'
 server = websocket.createServer()
 
 HOST = null
-PORT = 5000
+PORT = 10464
 
 STAGE_WIDTH = 49
 STAGE_HEIGHT = 49
