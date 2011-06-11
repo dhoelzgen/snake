@@ -2,8 +2,6 @@
 
 This multiplayer snake game was built to try out canvas, node.js with websockets, and coffeescript.
 
-**Nodester seems to be down at the moment, so the demo is not available, sorry.**
-
 You can see a socket.io based version in action at [http://snake.nodester.com/](http://snake.nodester.com/), but you should use Chrome or Safari to view it...
 
 # Installation
