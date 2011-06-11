@@ -22,7 +22,7 @@ snakes = []
 server = http.createServer (req, res) ->
 	path = url.parse(req.url).pathname
 	switch path
-		when '/', '/index.html', '/client.js', '/style.css'
+		when '/', '/index.html', '/client.coffee', '/style.css'
 			path = '/index.html' if path == '/'
 			fs.readFile __dirname + path, (err, data) ->
 				if err
