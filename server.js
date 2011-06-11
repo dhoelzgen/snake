@@ -25,7 +25,7 @@ server = http.createServer(function(req, res) {
   switch (path) {
     case '/':
     case '/index.html':
-    case '/client.coffee':
+    case '/client.js':
     case '/style.css':
       if (path === '/') {
         path = '/index.html';
