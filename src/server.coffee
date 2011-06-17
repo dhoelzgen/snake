@@ -6,7 +6,7 @@ io = require 'socket.io'
 fs = require 'fs'
 
 HOST = null
-PORT = 80
+PORT = 5000
 
 STAGE_WIDTH = 49
 STAGE_HEIGHT = 49
