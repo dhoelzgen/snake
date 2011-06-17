@@ -40,7 +40,10 @@ if (window["WebSocket"]) {
       return _results;
     };
     connect = function() {
-      server = new io.Socket("snake.9elements.com");
+      server = new io.Socket(null, {
+        port: 80,
+        rememberTransport: false
+      });
       server.connect();
       return server.on("message", function(event) {
         var message;
