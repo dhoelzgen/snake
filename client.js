@@ -40,7 +40,7 @@ if (window["WebSocket"]) {
       return _results;
     };
     connect = function() {
-      server = new io.Socket(null, {
+      server = new io.Socket("snake.9elements.com", {
         port: 80,
         rememberTransport: false
       });
