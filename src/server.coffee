@@ -46,9 +46,15 @@ server.listen port = Number(process.env.PORT || PORT)
 class Snake
 	constructor: (@id) ->
 		@reset()
+		@kills = 0
+		@deaths = 0
+		
+	addKill: ->
+	  @kills++
 	
 	reset: ->
 		rH = Math.floor(Math.random()*49)
+		@deaths++
 		@direction = "right"	
 		@elements = ([-i, rH] for i in [SNAKE_LENGTH..1])
 	doStep: ->
@@ -134,7 +140,9 @@ checkCollisions = ->
 		
 		for other in snakes
 			if other isnt snake
-				resetSnakes.push snake if other.blocks snake
+				if other.blocks snake
+				  resetSnakes.push snake 
+				  other.addKill()
 		
 	for snake in resetSnakes
 		snake.reset()

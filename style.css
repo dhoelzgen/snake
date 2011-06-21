@@ -7,6 +7,7 @@ body {
 h1 {
 	font-weight: bold; 	
 	padding: 10px;
+	padding-bottom: 0px;
 	text-align: center;
 	font-size: 32px;
 }
@@ -24,6 +25,12 @@ a:hover {
 	top: 0;
 	right: 0;
 	border: 0;
+}
+
+#scoreboard {
+  text-align: center;
+  padding: 0;
+  padding-bottom: 12px;
 }
 
 #stage {

@@ -21,13 +21,17 @@ if window["WebSocket"]
 			for snake in snakes
 				context.fillStyle = if snake.id == id then 'rgb(170,0,0)' else 'rgb(0,0,0)'
 				
+				if snake.id == id
+				  $("#kills").html("Kills: #{snake.kills}")
+				  $("#deaths").html("Deaths: #{snake.deaths}")
+				
 				for element in snake.elements
 					x = element[0] * 10
 					y = element[1] * 10
 					context.fillRect(x, y, 9, 9)
 			
 		connect = ->
-			server = new io.Socket("snake.9elements.com", { 'port': 5000 })
+			server = new io.Socket("localhost", { 'port': 5000 })
 			server.connect()
 			server.on "message", (event) ->
 				message = JSON.parse(event)
