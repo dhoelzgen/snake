@@ -31,7 +31,7 @@ if window["WebSocket"]
 					context.fillRect(x, y, 9, 9)
 			
 		connect = ->
-			server = new io.Socket("localhost", { 'port': 5000 })
+			server = new io.Socket("snake.9elements.com", { 'port': 5000 })
 			server.connect()
 			server.on "message", (event) ->
 				message = JSON.parse(event)
