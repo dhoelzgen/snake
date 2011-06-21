@@ -59,25 +59,27 @@
       this.deaths = 0;
     }
     Snake.prototype.addKill = function() {
-      return this.kills++;
+      this.kills++;
+      return this.length = this.elements.unshift([-1, -1]);
     };
     Snake.prototype.reset = function() {
       var i, rH;
       rH = Math.floor(Math.random() * 49);
       this.deaths++;
+      this.length = SNAKE_LENGTH;
       this.direction = "right";
       return this.elements = (function() {
-        var _results;
+        var _ref, _results;
         _results = [];
-        for (i = SNAKE_LENGTH; SNAKE_LENGTH <= 1 ? i <= 1 : i >= 1; SNAKE_LENGTH <= 1 ? i++ : i--) {
+        for (i = _ref = this.length; _ref <= 1 ? i <= 1 : i >= 1; _ref <= 1 ? i++ : i--) {
           _results.push([-i, rH]);
         }
         return _results;
-      })();
+      }).call(this);
     };
     Snake.prototype.doStep = function() {
       var i, _ref;
-      for (i = 0, _ref = SNAKE_LENGTH - 2; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
+      for (i = 0, _ref = this.length - 2; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
         this.moveTail(i);
       }
       return this.moveHead();
@@ -88,7 +90,7 @@
     };
     Snake.prototype.moveHead = function() {
       var head;
-      head = SNAKE_LENGTH - 1;
+      head = this.length - 1;
       switch (this.direction) {
         case "left":
           this.elements[head][0] -= 1;
@@ -116,11 +118,11 @@
       }
     };
     Snake.prototype.head = function() {
-      return this.elements[SNAKE_LENGTH - 1];
+      return this.elements[this.length - 1];
     };
     Snake.prototype.blocks = function(other) {
       var collision, element, head, _i, _len, _ref;
-      head = other.elements[SNAKE_LENGTH - 1];
+      head = other.head();
       collision = false;
       _ref = this.elements;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -133,9 +135,9 @@
     };
     Snake.prototype.blocksSelf = function() {
       var collision, head, i, _ref;
-      head = this.elements[SNAKE_LENGTH - 1];
+      head = this.head();
       collision = false;
-      for (i = 0, _ref = SNAKE_LENGTH - 2; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
+      for (i = 0, _ref = this.length - 2; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
         if (head[0] === this.elements[i][0] && head[1] === this.elements[i][1]) {
           collision = true;
         }

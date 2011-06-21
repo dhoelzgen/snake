@@ -51,14 +51,17 @@ class Snake
 		
 	addKill: ->
 	  @kills++
+	  @length = @elements.unshift([-1,-1])
 	
 	reset: ->
 		rH = Math.floor(Math.random()*49)
 		@deaths++
+		@length = SNAKE_LENGTH
 		@direction = "right"	
-		@elements = ([-i, rH] for i in [SNAKE_LENGTH..1])
+		@elements = ([-i, rH] for i in [@length..1])
+		
 	doStep: ->
-		@moveTail i for i in [0..(SNAKE_LENGTH-2)]
+		@moveTail i for i in [0..(@length-2)]
 		@moveHead()
 	
 	moveTail: (i) ->
@@ -66,7 +69,7 @@ class Snake
 		@elements[i][1] = @elements[i+1][1]
 			
 	moveHead: ->
-		head = SNAKE_LENGTH - 1
+		head = @length - 1
 		
 		switch @direction
 			when "left" then @elements[head][0] -= 1
@@ -80,10 +83,10 @@ class Snake
 		@elements[head][1] = 0 if @elements[head][1] > STAGE_HEIGHT
 		
 	head: ->
-		@elements[SNAKE_LENGTH-1]
+		@elements[@length-1]
 		
 	blocks: (other) ->
-		head = other.elements[(SNAKE_LENGTH-1)]
+		head = other.head()
 		collision = false
 		for element in @elements
 			collision = true if head[0] == element[0] and head[1] == element[1]
@@ -91,9 +94,9 @@ class Snake
 		return collision
 		
 	blocksSelf: ->
-		head = @elements[(SNAKE_LENGTH-1)]
+		head = @head()
 		collision = false
-		for i in [0..(SNAKE_LENGTH-2)]
+		for i in [0..(@length-2)]
 			collision = true if head[0] == @elements[i][0] and head[1] == @elements[i][1]
 		
 		return collision
