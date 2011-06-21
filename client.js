@@ -45,7 +45,7 @@
         return _results;
       };
       connect = function() {
-        server = new io.Socket("localhost", {
+        server = new io.Socket("snake.9elements.com", {
           'port': 5000
         });
         server.connect();
