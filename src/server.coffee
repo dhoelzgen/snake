@@ -10,7 +10,7 @@ PORT = 5000
 
 STAGE_WIDTH = 49
 STAGE_HEIGHT = 49
-SNAKE_LENGTH = 8
+SNAKE_LENGTH = 16
 
 Array::remove = (e) -> @[t..t] = [] if (t = @.indexOf(e)) > -1
 
